@@ -27,15 +27,26 @@ namespace SeaFight
             //по умолчанию стоит максимальное количество кораблей каждого ранга, сравняем с реальным
 
             int nextShipLength = 0;
+
             //проходим по всем столбцам и строкам, так можно посчитать корабли длиннее 1
             //по строкам
-            for (int i = 0; i < cells.Length; i++)
+            for (int i = 0; i < cells.Length; i++)     
             {
                 for (int j = 0; j < cells[0].Length; j++)
                 {
+                    if (i != 0 && j == 0)
+                    {
+                        if (nextShipLength > 4)
+                            return RecountStatus.MoreThanFourLengthShip;
+                        if (nextShipLength > 1)
+                            s.LengthCountShipsArray[nextShipLength]--;
+                        nextShipLength = 0;
+                    }
+
                     if (cells[i][j] == Cell.Life)
                         nextShipLength++;
-                    else if (nextShipLength > 0)
+
+                    if ((cells[i][j] != Cell.Life))
                     {
                         if (nextShipLength > 4)
                             return RecountStatus.MoreThanFourLengthShip;
@@ -44,16 +55,31 @@ namespace SeaFight
                         nextShipLength = 0;
                     }
                 }
+
+
             }
-            //по столбцам
+            if (nextShipLength > 1)
+                s.LengthCountShipsArray[nextShipLength]--;
             nextShipLength = 0;
+            //по столбцам
             for (int i = 0; i < cells.Length; i++)
             {
+                
                 for (int j = 0; j < cells[0].Length; j++)
                 {
+                    if (i != 0 && j == 0)
+                    {
+                        if (nextShipLength > 4)
+                            return RecountStatus.MoreThanFourLengthShip;
+                        if (nextShipLength > 1)
+                            s.LengthCountShipsArray[nextShipLength]--;
+                        nextShipLength = 0;
+                    }
+
                     if (cells[j][i] == Cell.Life)
                         nextShipLength++;
-                    else if (nextShipLength > 0)
+
+                    if (cells[j][i] != Cell.Life)
                     {
                         if (nextShipLength > 4)
                             return RecountStatus.MoreThanFourLengthShip;
@@ -62,12 +88,15 @@ namespace SeaFight
                         nextShipLength = 0;
                     }
                 }
+                
             }
+            if (nextShipLength > 1)
+                s.LengthCountShipsArray[nextShipLength]--;
+
             for (int i = 0; i < cells.Length; i++)
             {
                 for (int j = 0; j < cells[0].Length; j++)
                 {
-
                     if (cells[i][j] == Cell.Life && GetShipCells(cells, i, j).Count == 1)
                         //если корабль жив и его длина 1 ячейка..
                         s.LengthCountShipsArray[1]--;
